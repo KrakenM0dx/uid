@@ -50,7 +50,7 @@ function AddWindow(options)
 	local Container1 = Instance.new("Frame")
 	Container1.Parent = ScreenGui
 	Container1.Size = UDim2.new(0, 550, 0, 600)
-	Container1.AnchorPoint = Vector2.new("0.5", "0.5")
+	Container1.AnchorPoint = Vector2.new(0.5, 0.5)
 	Container1.Position = UDim2.new(0.5, -100, 0.5, 0)
 	Container1.BorderSizePixel = 0
 	Container1.Name = "Container1"
@@ -71,7 +71,7 @@ function AddWindow(options)
 		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(13, 18, 31))
 	}
 
-	UIGradient1.Rotation = 90 -- Verticle Gradient
+	UIGradient1.Rotation = 90 -- Vertical Gradient
 	UIGradient1.Parent = Container1
 
 	local UIStroke1 = Instance.new("UIStroke")
@@ -127,7 +127,7 @@ function AddWindow(options)
 		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(14, 17, 24))
 	}
 
-	UIGradient2.Rotation = 90 -- Verticle Gradient
+	UIGradient2.Rotation = 90 -- Vertical Gradient
 	UIGradient2.Parent = InnerContainer
 
 	local UIStroke2 = Instance.new("UIStroke")
@@ -200,7 +200,7 @@ function AddWindow(options)
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(36, 39, 49)),
 		}
 
-		UIGradient3.Rotation = 90 -- Verticle Gradient
+		UIGradient3.Rotation = 90 -- Vertical Gradient
 		UIGradient3.Parent = Tab
 
 		local TabText = Instance.new("TextLabel")
@@ -267,7 +267,7 @@ function AddWindow(options)
 					RightContainer.Visible = true
 					Library:tween(ActiveLine, {BackgroundTransparency = 0})
 					Library:tween(Tab, {BackgroundTransparency = 0})
-					menu.CurrentTab = Tab
+					menu.CurrentTab = tab
 				end
 			end
 
@@ -307,24 +307,8 @@ function AddWindow(options)
 				end
 			end)
 
-			TabContainer.MouseEnter:Connect(function()
-				tab.MouseInside = true
-			end)
-
-			TabContainer.MouseLeave:Connect(function()
-				tab.MouseInside = false
-			end)
-
-			UIS.InputBegan:Connect(function(input, gpe)
-				if gpe then return end
-
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					if tab.Hover then
-						tab:Activate()
-					elseif tab.MouseInside then
-						tab:Deactivate()
-					end
-				end
+			Tab.MouseButton1Click:Connect(function()
+				tab:Activate()
 			end)
 
 			if menu.CurrentTab == nil then
@@ -426,7 +410,7 @@ function AddWindow(options)
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(37, 47, 63)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(14, 18, 31))
 			}
-			UIGradient3.Rotation = 90 -- Verticle Gradient
+			UIGradient3.Rotation = 90 -- Vertical Gradient
 			UIGradient3.Parent = SectionBar
 
 			local SectionText = Instance.new("TextLabel")
@@ -718,23 +702,33 @@ function AddWindow(options)
 				SliderBar.Name = "SliderBar"
 				SliderBar.ZIndex = 3
 
+				local SliderKnob = Instance.new("Frame")
+				SliderKnob.Size = UDim2.new(0, 10, 0, 20)
+				SliderKnob.Position = UDim2.new(1, -5, 0.5, 0)
+				SliderKnob.AnchorPoint = Vector2.new(0.5, 0.5)
+				SliderKnob.Parent = SliderBar
+				SliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				SliderKnob.BorderSizePixel = 0
+				SliderKnob.Name = "SliderKnob"
+				SliderKnob.ZIndex = 4
+
+				local UIStrokeKnob = Instance.new("UIStroke")
+				UIStrokeKnob.Thickness = 1 -- Set the thickness of the outline
+				UIStrokeKnob.Color = Color3.new(0, 0, 0) -- Set the color of the outline
+				UIStrokeKnob.Parent = SliderKnob
+
 				local SliderValue = Instance.new("TextLabel")
-				SliderValue.Size = UDim2.new(0, 10, 0, 10)
-				SliderValue.Parent = SliderBar
-				SliderValue.TextXAlignment = Enum.TextXAlignment.Center
-				SliderValue.Position = UDim2.new(1, -5, 0, 8)
+				SliderValue.Size = UDim2.new(0, 30, 1, 0)
+				SliderValue.Parent = SliderKnob
+				SliderValue.Position = UDim2.new(0.5, 0, -1, 0)
+				SliderValue.AnchorPoint = Vector2.new(0.5, 0.5)
 				SliderValue.BackgroundTransparency = 1
 				SliderValue.FontFace = Font.fromId(12187362578, Enum.FontWeight.ExtraBold)
-				SliderValue.Text = options.value
-				SliderValue.TextColor3 = Color3.fromRGB(150, 150, 150)
+				SliderValue.Text = options.default
+				SliderValue.TextColor3 = Color3.fromRGB(56, 149, 238)
 				SliderValue.TextSize = 13
 				SliderValue.Name = options.name
-				SliderValue.ZIndex = 4
-
-				local ValueOutline = Instance.new("UIStroke")
-				ValueOutline.Thickness = 1 -- Set the thickness of the outline
-				ValueOutline.Color = Color3.new(0, 0, 0) -- Set the color of the outline
-				ValueOutline.Parent = SliderValue
+				SliderValue.ZIndex = 5
 
 				local SliderStroke = Instance.new("UIStroke")
 				SliderStroke.Parent = SliderBackground
@@ -750,6 +744,7 @@ function AddWindow(options)
 
 						SliderValue.Text = slidervalue
 						SliderBar.Size = UDim2.fromScale((slidervalue - options.min) / (options.max - options.min), 1)
+						SliderKnob.Position = UDim2.fromScale((slidervalue - options.min) / (options.max - options.min), 0.5)
 					end
 					options.callback(slider:GetValue())
 				end
@@ -1047,7 +1042,7 @@ function AddWindow(options)
 			Hover = false
 		}
 
-		-- This prevents it from dragging on elements like sliders and colorpickers.
+		-- This prevents it from dragging on elements like sliders and color pickers.
 		InnerContainer.MouseEnter:Connect(function()
 			container.Hover = true
 		end)
